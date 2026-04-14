@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/mydatabase
+      SECRET_KEY: dev_secret_key
+      JWT_SECRET_KEY: dev_jwt_secret_key
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
